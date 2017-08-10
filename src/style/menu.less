@@ -1,0 +1,35 @@
+.ant-layout-sider-collapsed{
+	overflow:initial !important;
+}
+.avatar{
+	width:40px;
+	display:block;
+	img{
+	    width: 100%;
+	    vertical-align: middle;
+	    border-radius:50%;
+	}
+}
+.switcher {
+  z-index: 1050;
+  position: fixed;
+  top: 78px;
+  right: -240px;
+  width: 240px;
+  transition: right 0.2s ease;
+  border: 1px solid rgba(120, 120, 120, 0.1);
+  background-clip: padding-box;
+  &.active {
+    right: -2px;
+  }
+  .sw-btn {
+    position: absolute;
+    left: -43px;
+    top: -1px;
+    padding: 10px 15px;
+    z-index: 1045;
+    border: 1px solid rgba(120, 120, 120, 0.1);
+    border-right-width: 0;
+    background-clip: padding-box;
+  }
+}
