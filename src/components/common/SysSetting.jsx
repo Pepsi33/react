@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { Modal, Button } from 'antd';
 
 class SysSettingModal extends React.Component {

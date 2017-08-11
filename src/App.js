@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
+import { getAuthorization } from './axios/index';
 import store from './redux/store';
 import { Layout } from 'antd';
 import Siderbar from './components/common/Siderbar';
@@ -10,16 +11,20 @@ const { Content, Footer } = Layout;
 class App extends Component {
   componentWillMount() {
       this.checkAuth();
-      console.log(store.getState())
+      console.log("app",store.getState())
   }
   state = {
     collapsed: false,
   }
-  checkAuth = () =>{
-    var token = store.getState();
-    if(!token.islogin){
-      hashHistory.push('/login');
+  checkAuth = () =>{              
+    var token = sessionStorage.getItem("access_token");
+    var flage = store.getState().islogin;
+    if(!flage&&token){
+      getAuthorization(token);      //验证用户
     }
+  }
+  componentDidMount() {
+    console.log("app",store.getState())
   }
   toggle = () => {
     this.setState({

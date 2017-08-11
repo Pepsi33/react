@@ -5,17 +5,11 @@ import { login } from '../../axios/index';
 import '../../style/login.less';
 import { isLayout } from '../../redux/actions';
 import store from '../../redux/store';
-import { Form, Icon, Input, Button, Checkbox,Alert } from 'antd';
+import { Form, Icon, Input, Button, Checkbox } from 'antd';
 const FormItem = Form.Item;
 
 class Login extends React.Component {
-    _login = login;
     state = {
-        alert:{
-             message:"success",        //success、info、warning、error
-             type:"success",
-             showIcon:true,
-        }
     }
     componentWillMount() {
         store.dispatch(isLayout());
@@ -26,42 +20,24 @@ class Login extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                this._login(values,this.loginSuccessTip);
+                login(values);
             }
         });
     }
     gitHub = () => {
         window.location.href = 'https://github.com/login/oauth/authorize?client_id=792cdcd244e98dcd2dee&redirect_uri=http://localhost:3006/&scope=user&state=reactAdmin';
     }
-    loginSuccessTip = (msg,cb) => {
-        console.log(msg)
-        this.setState = {
-            alert:{
-                message:msg,        
-                type:"success",            //success、info、warning、error
-                showIcon:true,
-            }
-        }
-        console.log("loginSuccessTip: ",this.state)
-        cb&&cb();
-
-    }
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <div className>
-                <Alert 
-                    message={this.state.alert.message} 
-                    type={this.state.alert.type} 
-                    showIcon={this.state.alert.showIcon} />
-                <div className="login">
+            <div className="login">
                     <div className="login-form" >
                         <div className="login-logo">
                             <span>React</span>
                         </div>
                         <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                             <FormItem>
-                                {getFieldDecorator('userName', {
+                                {getFieldDecorator('username', {
                                     rules: [{ required: true, message: '请输入用户名!' }],
                                 })(
                                     <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名" />
@@ -92,8 +68,7 @@ class Login extends React.Component {
                             </FormItem>
                         </Form>
                     </div>
-                </div>
-            </div>    
+            </div> 
         );
     }
 }

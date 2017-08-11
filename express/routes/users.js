@@ -8,7 +8,7 @@ const router = express.Router();
 require('../database/passport')(passport);
 
 // 注册账户
-router.post('/signup', (req, res) => {
+router.post('/register', (req, res) => {
   if (!req.body.name || !req.body.password) {
     res.json({success: false, message: '请输入您的账号密码.'});
   } else {
@@ -29,7 +29,7 @@ router.post('/signup', (req, res) => {
 // 检查用户名与密码并生成一个accesstoken如果验证通过
 router.post('/login', (req, res) => {
   User.findOne({
-    name: req.body.userName
+    name: req.body.username
   }, (err, user) => {
     if (err) {
       throw err;
@@ -77,7 +77,10 @@ router.post('/login', (req, res) => {
 router.get('/user/user_info',
   passport.authenticate('bearer', { session: false }),
   function(req, res) {
-    res.json({username: req.user.name});
+    res.json({
+      success: true,
+      username: req.user.name
+    });
 });
 
 

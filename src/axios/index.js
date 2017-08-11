@@ -4,21 +4,17 @@ import { hashHistory } from 'react-router';
 import store from '../redux/store';
 import { isLogin } from '../redux/actions';
 
-export const login = (data,cb) =>axios.post('http://localhost:9000/api/login',data).then(function(res){
-            let msg = res.data.message;
 
+
+export const login = (data) => axios.post('http://localhost:9000/api/login',data).then(function(res){
+            console.log('login: ',res)
             if(res.data.success){
-                cb(msg,()=>{
-                    console.log(this)
-                    store.dispatch(isLogin(data));
-                    //hashHistory.push('/app/index');
-                });
-                
+                sessionStorage.setItem("access_token",res.data.token);
+                store.dispatch(isLogin(data));      //存儲數據
+                hashHistory.push('/app/index');
             }else{
-                cb(msg);
                 return;
             }
-            
         }).catch(function(err){
           console.log(err);
         });
@@ -37,7 +33,6 @@ export const loginByFetch = (data) => {
               console.log('request succeeded with JSON response', data);
               store.dispatch(isLogin(data));
               hashHistory.push('/app/index')          //跳转到home
-              //window.location.href = "/#/app"
             } else if (res.status == 401) { //处理http状态码
               alert("unauthorized");
             }
@@ -45,6 +40,31 @@ export const loginByFetch = (data) => {
             console.log('request failed', error)
         })
     };
+
+
+export const getAuthorization = (token) => {
+    var instance = axios.create({
+      baseURL:"http://localhost:9000/api",
+      timeout:1000,
+      headers:{
+        'content-Type':'appliction/x-www-form-urlencoded',
+        'Authorization':token
+      }
+    });
+
+    instance.get('user/user_info').then(function(res){
+        console.log('user/user_info: ',res)
+        if(res.data.success){
+            sessionStorage.setItem("username",res.data.username);
+            store.dispatch(isLogin(res.data));
+        }else{
+            hashHistory.push('/login');
+        }    
+    }).catch(function(err){
+      console.log(err);
+    });
+
+}
 
 
 

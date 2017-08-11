@@ -17,22 +17,12 @@ const MenuItemGroup = Menu.ItemGroup;
 
 class Headerbar extends Component {
     state = {
-        visible:false
-    }
-    showModal = () => {
-        this.setState({
-          visible: true
-        });
-    }
-    handleModal = () => {
-        this.setState({
-          visible: false,
-        });
     }
     componentWillMount() {
+        console.log("headerbar",store.getState())
         var user = store.getState();
         this.setState({
-            user: user.userName
+            user: user.username||sessionStorage.getItem("username")
         });
     };
     screenFull = () => {
@@ -41,12 +31,12 @@ class Headerbar extends Component {
         }
     }
     layout = () => {
+        sessionStorage.remove("access_token");
         console.log(store.getState())
         store.dispatch(isLayout());
         hashHistory.push('/login');
     }
     render() {
-        console.log(this.state)
         return (
             <Header style={{ background: '#fff', padding: 0 }} className="custom-theme">
                 <Icon
