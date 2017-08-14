@@ -3,20 +3,24 @@ import axios from "axios";
 import { hashHistory } from 'react-router';
 import store from '../redux/store';
 import { isLogin } from '../redux/actions';
+import { message } from 'antd';
 
 
 
 export const login = (data) => axios.post('http://localhost:9000/api/login',data).then(function(res){
             console.log('login: ',res)
             if(res.data.success){
+                message.success(res.data.message);
                 sessionStorage.setItem("access_token",res.data.token);
                 store.dispatch(isLogin(data));      //存儲數據
                 hashHistory.push('/app/index');
             }else{
+                message.warning(res.data.message);
                 return;
             }
         }).catch(function(err){
-          console.log(err);
+            message.error(err);
+            console.log(err);
         });
 
 export const loginByFetch = (data) => {
@@ -63,10 +67,21 @@ export const getAuthorization = (token) => {
     }).catch(function(err){
       console.log(err);
     });
-
 }
 
-
+export const register = (data) => axios.post('http://localhost:9000/api/register',data).then(function(res){
+            console.log('login: ',res)
+            if(res.data.success){
+                message.success(res.data.message);
+                hashHistory.push('/login');
+            }else{
+                message.warning(res.data.message);
+                return;
+            }
+        }).catch(function(err){
+            message.error(err);
+            console.log(err);
+        });
 
 
 

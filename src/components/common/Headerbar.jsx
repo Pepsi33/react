@@ -16,7 +16,17 @@ const SubMenu = Menu.SubMenu;
 const MenuItemGroup = Menu.ItemGroup;
 
 class Headerbar extends Component {
-    state = {
+    state = { visible: false }
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    }
+    handleModal = (e) => {
+        console.log(e);
+        this.setState({
+            visible: false,
+        });
     }
     componentWillMount() {
         console.log("headerbar",store.getState())
@@ -31,7 +41,7 @@ class Headerbar extends Component {
         }
     }
     layout = () => {
-        sessionStorage.remove("access_token");
+        sessionStorage.removeItem("access_token");
         console.log(store.getState())
         store.dispatch(isLayout());
         hashHistory.push('/login');

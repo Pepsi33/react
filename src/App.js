@@ -19,8 +19,10 @@ class App extends Component {
   checkAuth = () =>{              
     var token = sessionStorage.getItem("access_token");
     var flage = store.getState().islogin;
-    if(!flage&&token){
+    if(token){
       getAuthorization(token);      //验证用户
+    }else{
+        hashHistory.push('/login')
     }
   }
   componentDidMount() {

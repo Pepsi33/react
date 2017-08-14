@@ -69,10 +69,11 @@
     "multer": "^1.1.0"
   },
   "scripts": {
-    "start": "node scripts/start.js",
+    "start":"npm run server && npm run web_server",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "server":"node express/app.js"
+    "web_server":"node scripts/start.js &",
+    "server":"node express/app.js &"
   },
   "jest": {
     "collectCoverageFrom": [
