@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config');
 const passport = require('passport');
 const router = express.Router();
+const multiparty = require("multiparty");
 
 require('../database/passport')(passport);
 
@@ -83,5 +84,21 @@ router.get('/user/user_info',
     });
 });
 
+
+router.post('/img',(req, res) => {
+    var form = new multiparty.Form();
+    form.parse(req, function (err, fields, files) {
+       console.log("fields:",fields);
+       console.log('files:',files);
+
+       res.send({
+        success: true,
+        username: files
+      });
+       
+    });
+
+    
+});
 
 module.exports = router;
