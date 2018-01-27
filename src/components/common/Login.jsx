@@ -2,10 +2,11 @@
 import React from 'react';
 //import { hashHistory } from 'react-router';
 import { login } from '../../axios/index';
-import '../../style/login.less';
 import { isLayout } from '../../redux/actions';
 import store from '../../redux/store';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import '../../style/login.less';
+
 const FormItem = Form.Item;
 
 class Login extends React.Component {
@@ -30,7 +31,7 @@ class Login extends React.Component {
             <div className="login">
                     <div className="login-form" >
                         <div className="login-logo">
-                            <span>React</span>
+                            <span>欢迎登陆报表中心平台</span>
                         </div>
                         <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                             <FormItem>

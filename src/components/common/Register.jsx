@@ -1,10 +1,9 @@
 import React from 'react';
-import { Form, Input, Tooltip, Icon, Cascader, Select, Row, Col, Checkbox, Button, AutoComplete } from 'antd';
+import { Form, Input, Checkbox, Button } from 'antd';
 import { register } from '../../axios/index';
-const FormItem = Form.Item;
-const Option = Select.Option;
-const AutoCompleteOption = AutoComplete.Option;
+import '../../style/register.less';
 
+const FormItem = Form.Item;
 
 class RegistrationForm extends React.Component {
   state = {
@@ -40,19 +39,8 @@ class RegistrationForm extends React.Component {
     callback();
   }
 
-  handleWebsiteChange = (value) => {
-    let autoCompleteResult;
-    if (!value) {
-      autoCompleteResult = [];
-    } else {
-      autoCompleteResult = ['.com', '.org', '.net'].map(domain => `${value}${domain}`);
-    }
-    this.setState({ autoCompleteResult });
-  }
-
   render() {
     const { getFieldDecorator } = this.props.form;
-    const { autoCompleteResult } = this.state;
 
     const formItemLayout = {
       labelCol: {
@@ -76,83 +64,75 @@ class RegistrationForm extends React.Component {
         },
       },
     };
-    const prefixSelector = getFieldDecorator('prefix', {
-      initialValue: '86',
-    })(
-      <Select style={{ width: 60 }}>
-        <Option value="86">+86</Option>
-        <Option value="87">+87</Option>
-      </Select>
-    );
-
-    const websiteOptions = autoCompleteResult.map(website => (
-      <AutoCompleteOption key={website}>{website}</AutoCompleteOption>
-    ));
     
     const style = {
-      margin:"10% auto",
-      width:"60%"
+	  width:"50%",
+	  background:"#fff",
+	  padding:"50px 0 10px",
+	  marginTop:"-200px"
     }
 
     return (
-      <Form onSubmit={this.handleSubmit} style={style}>
-        <FormItem
-          {...formItemLayout}
-          label="用户名"
-          hasFeedback
-        >
-          {getFieldDecorator('name', {
-            rules: [{
-              required: true, message: '用户名不能为空！',
-            }],
-          })(
-            <Input />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="密码"
-          hasFeedback
-        >
-          {getFieldDecorator('password', {
-            rules: [{
-              required: true, message: '请输入密码！',
-            }, {
-              validator: this.checkConfirm,
-            }],
-          })(
-            <Input type="password" />
-          )}
-        </FormItem>
-        <FormItem
-          {...formItemLayout}
-          label="确认密码"
-          hasFeedback
-        >
-          {getFieldDecorator('confirm', {
-            rules: [{
-              required: true, message: '请再次确认密码！',
-            }, {
-              validator: this.checkPassword,
-            }],
-          })(
-            <Input type="password" onBlur={this.handleConfirmBlur} />
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
-          {getFieldDecorator('agreement', {
-            valuePropName: 'checked',
-            rules: [{
-              required: true, message: '请仔细阅读什么鬼。。。',
-            }]
-          })(
-            <Checkbox>我已经阅读了<a href="javascript:;">什么鬼</a></Checkbox>
-          )}
-        </FormItem>
-        <FormItem {...tailFormItemLayout}>
-          <Button type="primary" htmlType="submit">提交</Button>
-        </FormItem>
-      </Form>
+		<div className="register">
+			<Form onSubmit={this.handleSubmit} style={style}>
+				<FormItem
+					{...formItemLayout}
+					label="用户名"
+					hasFeedback
+				>
+					{getFieldDecorator('name', {
+						rules: [{
+							required: true, message: '用户名不能为空！',
+						}],
+					})(
+						<Input />
+						)}
+				</FormItem>
+				<FormItem
+					{...formItemLayout}
+					label="密码"
+					hasFeedback
+				>
+					{getFieldDecorator('password', {
+						rules: [{
+							required: true, message: '请输入密码！',
+						}, {
+							validator: this.checkConfirm,
+						}],
+					})(
+						<Input type="password" />
+						)}
+				</FormItem>
+				<FormItem
+					{...formItemLayout}
+					label="确认密码"
+					hasFeedback
+				>
+					{getFieldDecorator('confirm', {
+						rules: [{
+							required: true, message: '请再次确认密码！',
+						}, {
+							validator: this.checkPassword,
+						}],
+					})(
+						<Input type="password" onBlur={this.handleConfirmBlur} />
+						)}
+				</FormItem>
+				<FormItem {...tailFormItemLayout} style={{ marginBottom: 8 }}>
+					{getFieldDecorator('agreement', {
+						valuePropName: 'checked',
+						rules: [{
+							required: true, message: '请仔细阅读什么鬼。。。',
+						}]
+					})(
+						<Checkbox>我已经阅读了<a href="viod(0)">什么鬼</a></Checkbox>
+						)}
+				</FormItem>
+				<FormItem {...tailFormItemLayout}>
+					<Button type="primary" htmlType="submit">提交</Button>
+				</FormItem>
+			</Form>
+	  	</div>
     );
   }
 }

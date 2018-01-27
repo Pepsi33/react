@@ -1,6 +1,4 @@
-/**
- * Created by hao.cheng on 2017/4/13.
- */
+
 import React, { Component } from 'react';
 import { Menu, Icon, Layout, Badge } from 'antd';
 import screenfull from 'screenfull';
@@ -8,8 +6,6 @@ import store from '../../redux/store';
 import SysSettingModal from './SysSetting';
 import { isLayout } from '../../redux/actions';
 import { hashHistory,Link } from 'react-router';
-/*import { gitOauthToken, gitOauthInfo } from '../axios';
-import { queryString } from '../utils';*/
 import avater from '../../style/img/wk.jpg';
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -48,7 +44,7 @@ class Headerbar extends Component {
     }
     render() {
         return (
-            <Header style={{ background: '#fff', padding: 0 }} className="custom-theme">
+            <Header style={{ background: '#fff', padding: 0 }} className="custom-theme top-header">
                 <Icon
                     className="trigger"
                     type={this.props.collapsed ? 'menu-unfold' : 'menu-fold'}
@@ -87,6 +83,10 @@ class Headerbar extends Component {
                     .ant-menu-submenu-horizontal > .ant-menu {
                         width: 120px;
                         left: -40px;
+                    }
+                    .custom-theme.top-header{
+                        position:relative;
+                        top:0;
                     }
                 `}</style>
             </Header>

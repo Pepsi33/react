@@ -1,7 +1,7 @@
 
 import React from 'react';
-import { Row, Col, Card, Timeline, Icon } from 'antd';
 import BreadcrumbCustom from '../common/Breadcrumb';
+import EchartsViews from './EchartsViews';
 
 
 class Home extends React.Component {
@@ -9,6 +9,7 @@ class Home extends React.Component {
         return (
             <div className="gutter-example button-demo">
                 <BreadcrumbCustom />
+                <EchartsViews/>
             </div>
         )
     }

@@ -6,14 +6,16 @@ import { isLogin } from '../redux/actions';
 import { message } from 'antd';
 
 
+const BASE_URL = "http://192.168.222.222:9000";
 
-export const login = (data) => axios.post('http://localhost:9000/api/login',data).then(function(res){
+
+export const login = (data) => axios.post('/api/login',data).then(function(res){
             console.log('login: ',res)
             if(res.data.success){
                 message.success(res.data.message);
                 sessionStorage.setItem("access_token",res.data.token);
                 store.dispatch(isLogin(data));      //存儲數據
-                hashHistory.push('/app/index');
+                hashHistory.push('/reportCenter/index');
             }else{
                 message.warning(res.data.message);
                 return;
@@ -24,7 +26,7 @@ export const login = (data) => axios.post('http://localhost:9000/api/login',data
         });
 
 export const loginByFetch = (data) => {
-        fetch('http://localhost:9000/api/login', {
+        fetch(BASE_URL+'/api/login', {
             method: 'POST',
             headers: {
               'Accept': 'application/json',
@@ -36,8 +38,8 @@ export const loginByFetch = (data) => {
             if (res.ok) {
               console.log('request succeeded with JSON response', data);
               store.dispatch(isLogin(data));
-              hashHistory.push('/app/index')          //跳转到home
-            } else if (res.status == 401) { //处理http状态码
+                hashHistory.push('/reportCenter/index')          //跳转到home
+            } else if (res.status === 401) { //处理http状态码
               alert("unauthorized");
             }
         }).catch(function(error) {
@@ -48,7 +50,7 @@ export const loginByFetch = (data) => {
 
 export const getAuthorization = (token) => {
     var instance = axios.create({
-      baseURL:"http://localhost:9000/api",
+      baseURL:BASE_URL+"/api",
       timeout:1000,
       headers:{
         'content-Type':'appliction/x-www-form-urlencoded',
@@ -69,7 +71,7 @@ export const getAuthorization = (token) => {
     });
 }
 
-export const register = (data) => axios.post('http://localhost:9000/api/register',data).then(function(res){
+export const register = (data) => axios.post(BASE_URL+'/api/register',data).then(function(res){
             console.log('login: ',res)
             if(res.data.success){
                 message.success(res.data.message);

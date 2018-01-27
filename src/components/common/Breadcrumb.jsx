@@ -55,7 +55,7 @@ class BreadcrumbCustom extends React.Component {
             <span>
                 <Breadcrumb style={{ margin: '12px 0' }}>
                     <Breadcrumb.Item>
-                        <Link to={'/app/index'}>首页</Link>
+                        <Link to={'/reportCenter/index'}>首页</Link>
                     </Breadcrumb.Item>
                     {first}
                     {second}
