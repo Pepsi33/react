@@ -1,6 +1,6 @@
 import React from 'react';
 import { Form, Input, Checkbox, Button } from 'antd';
-import { register } from '../../axios/index';
+//import { register } from '../../axios/index';
 import '../../style/register.less';
 
 const FormItem = Form.Item;
@@ -15,7 +15,7 @@ class RegistrationForm extends React.Component {
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         console.log('Received values of form: ', values);
-        register(values);
+        //register(values);
       }
     });
   }

@@ -1,8 +1,6 @@
 
 import React from 'react';
-//import { hashHistory } from 'react-router';
-import { login } from '../../axios/index';
-import { isLayout } from '../../redux/actions';
+import { login } from '../../redux/actions';
 import store from '../../redux/store';
 import { Form, Icon, Input, Button, Checkbox } from 'antd';
 import '../../style/login.less';
@@ -13,7 +11,7 @@ class Login extends React.Component {
     state = {
     }
     componentWillMount() {
-        store.dispatch(isLayout());
+        // store.dispatch(login());
         console.log(store.getState())
     }
     handleSubmit = (e) => {
@@ -21,7 +19,8 @@ class Login extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                login(values);
+                store.dispatch(login(values));
+                console.log("login页面=>",store.getState())
             }
         });
     }
@@ -35,7 +34,7 @@ class Login extends React.Component {
                         </div>
                         <Form onSubmit={this.handleSubmit} style={{maxWidth: '300px'}}>
                             <FormItem>
-                                {getFieldDecorator('username', {
+                                {getFieldDecorator('userName', {
                                     rules: [{ required: true, message: '请输入用户名!' }],
                                 })(
                                     <Input prefix={<Icon type="user" style={{ fontSize: 13 }} />} placeholder="用户名" />

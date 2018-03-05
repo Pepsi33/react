@@ -9,13 +9,12 @@ import NotFound from '../components/common/NotFound';
 
 import ReportManager from '../views/report/ReportManager';
 import ReportRpqueue from '../views/report/ReportRpqueue';
-
-
+import { checkAuth } from '../redux/reducers/UserInfo';
 
 const routes =
     <Route path={'/'} components={Page}>
         <IndexRedirect to="/reportCenter/index" />
-        <Route path={'reportCenter'} component={App}>
+        <Route onEnter={checkAuth} path={'reportCenter'} component={App}>
             <Route path={'index'} component={Home} />
             <Route path={'report/reportManager'} component={ReportManager} />
             <Route path={'report/reportRpqueue'} component={ReportRpqueue} />

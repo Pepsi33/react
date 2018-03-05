@@ -4,8 +4,8 @@ import { Menu, Icon, Layout, Badge } from 'antd';
 import screenfull from 'screenfull';
 import store from '../../redux/store';
 import SysSettingModal from './SysSetting';
-import { isLayout } from '../../redux/actions';
-import { hashHistory,Link } from 'react-router';
+import { layout } from '../../redux/actions';
+import { Link } from 'react-router';
 import avater from '../../style/img/wk.jpg';
 const { Header } = Layout;
 const SubMenu = Menu.SubMenu;
@@ -15,6 +15,7 @@ class Headerbar extends Component {
     state = { visible: false }
     showModal = () => {
         this.setState({
+            user:"",
             visible: true,
         });
     }
@@ -25,10 +26,10 @@ class Headerbar extends Component {
         });
     }
     componentWillMount() {
-        console.log("headerbar",store.getState())
-        var user = store.getState();
+        console.log("headerbar=>",store.getState())
+        var user = store.getState().UserInfo || JSON.parse(sessionStorage.getItem("userInfo"));
         this.setState({
-            user: user.username||sessionStorage.getItem("username")
+            user: user.username
         });
     };
     screenFull = () => {
@@ -37,10 +38,7 @@ class Headerbar extends Component {
         }
     }
     layout = () => {
-        sessionStorage.removeItem("access_token");
-        console.log(store.getState())
-        store.dispatch(isLayout());
-        hashHistory.push('/login');
+        store.dispatch(layout());
     }
     render() {
         return (
@@ -96,4 +94,4 @@ class Headerbar extends Component {
 
 export default Headerbar;
 
-
+ 

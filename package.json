@@ -69,11 +69,11 @@
     "multer": "^1.1.0"
   },
   "scripts": {
-    "start":"npm run server && npm run web_server",
+    "start":"npm run server&npm run web_server",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
-    "web_server":"node scripts/start.js &",
-    "server":"node express/app.js &"
+    "web_server":"node scripts/start.js",
+    "server":"node express/app.js"
   },
   "jest": {
     "collectCoverageFrom": [
@@ -115,5 +115,5 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "proxy": "http://192.168.222.222:9000"
+  "proxy":"http://192.168.71.121:8080"
 }

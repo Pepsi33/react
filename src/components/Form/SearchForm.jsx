@@ -48,7 +48,9 @@ class AdvancedSearchForm extends React.Component {
                 className="ant-advanced-search-form"
                 onSubmit={this.handleSearch}
             >
-                <Row gutter={24}>{this.getFields()}</Row>
+                <Row gutter={24}>
+                    
+                </Row>
                 <Row>
                     <Col span={24} style={{ textAlign: 'right' }}>
                         <Button type="primary" htmlType="submit">Search</Button>

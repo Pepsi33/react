@@ -1,36 +1,105 @@
 
 import React from 'react';
-import { Table } from 'antd';
+import { Table, Button } from 'antd';
+//import { Link } from 'react-router';
+
+import Http from '../../axios/index';
+import '../../style/less/reportRpqueue.less';
 
 const columns = [{
-    title: 'Name',
-    dataIndex: 'name',
+    title: '邮件标题',
+    dataIndex: 'mstitle',
+    key:"mstitle",
+    render:(text,record) => {
+        let url = `http://192.168.71.121:8080/reportcenter/report/reportRpqueueList.do?schid=${record.schid}`;
+        return <a href={url} target="_blank">{text}</a>
+        //return <Link to={{ pathname: url, state: {} }}><Button>直接跳转</Button></Link>
+    },
 }, {
-    title: 'Age',
-    dataIndex: 'age',
+    title: '创建者',
+    dataIndex: 'cman',
+        key:"cman"
 }, {
-    title: 'Address',
-    dataIndex: 'address',
+    title: '订阅日期',
+    dataIndex: 'mdate',
+    key:"mdate"
+},{
+    title: '调度状态',
+    dataIndex: 'stat',
+    key:"stat",
+    render:stat => {
+        return stat === "1"?"已启动":"待启动";
+    }
+},{
+    title: '操作',
+    dataIndex: 'handle',
+    key:"handle",
+    render:(text,record) =>(
+        <div className="bt-warp">
+            <Button type="primary" title="启动">启动</Button>
+            <Button type="primary" title="手动推送">推送</Button>
+            <Button type="primary" title="报表执行明细">明细</Button>
+        </div>
+    )
 }];
-
-const data = [];
-for (let i = 0; i < 46; i++) {
-    data.push({
-        key: i,
-        name: `Edward King ${i}`,
-        age: 32,
-        address: `London, Park Lane no. ${i}`,
-    });
-}
 
 class SelectTable extends React.Component {
     state = {
-        selectedRowKeys: [],  // Check here to configure the default column
+        loading:true,
+        selectedRowKeys: [],
+        pagination:{},
+        data:[]
     };
+    componentWillMount(){
+        this.getReportList();
+    }
     onSelectChange = (selectedRowKeys) => {
         console.log('selectedRowKeys changed: ', selectedRowKeys);
         this.setState({ selectedRowKeys });
     };
+    //pageSize 变化的回调
+    onShowSizeChange(current, pageSize) {
+        console.log("onShowSizeChange",this.state)
+        this.getReportList({ pageNo: current, limit: pageSize });
+    }
+    //分页事件
+    handleTableChange = (pagination,filters,sorter) => {
+        const pager = { ...this.state.pagination };
+        pager.current = pagination.current;
+        this.setState({ 
+            pagination:pager 
+        });
+        console.log(this.state)
+        this.getReportList({
+            limit: pagination.pageSize,
+            pageNo: pagination.current
+        })
+    }
+    showTotal = (total, range) => {
+        return <span>总共`${total}`页,当前第`${range}`页</span>;
+    }
+    //获取数据
+    getReportList = (params ={}) => {
+        this.setState({ loading:true });
+        Http.getReportList(params).then((res) => {
+            console.info('getReportList=>', res);
+            const pagination = { ...this.state.pagination }
+            pagination.total =  res.data.total;
+            //pagination.current = res.data.pageNo;
+
+            var data = res.data.items.forEach((v,i) => {
+                v.key = i;
+            });
+            
+            this.setState({
+                dataSource:res.data.items,
+                loading: false,
+                pagination
+            });
+        }).catch((err) => {
+            console.log(err);
+        });
+    }
     render() {
         const { selectedRowKeys } = this.state;
         const rowSelection = {
@@ -66,7 +135,20 @@ class SelectTable extends React.Component {
             onSelection: this.onSelection,
         };
         return (
-            <Table rowSelection={rowSelection} columns={columns} dataSource={data} />
+            <Table 
+                rowSelection={rowSelection} 
+                columns={columns} 
+                dataSource={this.state.dataSource} 
+                loading={this.state.loading} 
+                bordered={true}
+                showQuickJumper={true}
+                showSizeChanger={true}
+                pagination={this.state.pagination}
+                onChange={this.handleTableChange}
+                onShowSizeChange={this.onShowSizeChange}
+                showTotal={this.showTotal}
+                title={() =><h2>报表中心报表订阅审核</h2>}
+            />
         );
     }
 }
