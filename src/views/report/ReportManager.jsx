@@ -2,7 +2,7 @@
 import React from 'react';
 import { Table, Button, Modal,message } from 'antd';
 import { WrappedAdvancedSearchForm } from '../../components/Form/SearchForm';
-import Http from '../../axios/index';
+import RptManagerHttp from '../../axios/RptManagerHttp';
 import { openWindow } from '../../utils/index';
 const confirm = Modal.confirm;
 
@@ -47,7 +47,7 @@ class reportManagerTable extends React.Component {
         dataIndex: 'rpttitle',
         key: "rpttitle",
         render: (text, record) => {
-            let url = `http://192.168.71.121:8080/reportcenter/report/reportUpdate.do?rptid=${record.rptid}`;
+            let url = `#/report/detail/${record.rptid}`;
             return <a className="title" href={url} target="_blank">{text}</a>
             //return <Link to={{ pathname: url, state: {} }}><Button>直接跳转</Button></Link>
         },
@@ -86,7 +86,7 @@ class reportManagerTable extends React.Component {
     //获取数据
     getData = (params = {}) => {
         this.setState({ loading: true });
-        Http.getReportManagerList(params).then((res) => {
+        RptManagerHttp.getReportManagerList(params).then((res) => {
             console.info('getReportManagerList=>', res);
             const pagination = { ...this.state.pagination }
             pagination.total = res.data.total;
@@ -113,7 +113,7 @@ class reportManagerTable extends React.Component {
             content: '确定要删除此报表吗?',
             okType: 'danger',
             onOk() {
-                Http.deleteReport(rptid).then((res) => {
+                RptManagerHttp.deleteReport(rptid).then((res) => {
                     message.success("删除成功！");
                     _this.getData();
                 }).catch((err) => {
@@ -167,7 +167,7 @@ class reportManagerTable extends React.Component {
                     queryReport = {this.getData}
                 />
                 <div style={{marginBottom:"10px"}}>
-                    <Button type="primary" size="large" onClick={openWindow.bind(this,"http://192.168.71.121:8080/reportcenter/report/reportAdd.do")}>新增</Button>
+                    <Button type="primary" size="large" onClick={openWindow.bind(this,"#/addReport")}>新增</Button>
                     <Button type="primary" size="large" onClick={openWindow.bind(this,"http://192.168.71.121:8080/reportcenter/report/reportRpqueueList.do")}>多报表订阅</Button>
                 </div>
                 <div className="search-result-list">

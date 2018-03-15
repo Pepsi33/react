@@ -3,7 +3,7 @@ import React from 'react';
 import { Table, Button,Modal, message } from 'antd';
 //import { Link } from 'react-router';
 
-import Http from '../../axios/index';
+import RptQueueHttp from '../../axios/RptQueueHttp';
 import '../../style/less/reportRpqueue.less';
 import { openWindow } from '../../utils/index';
 const confirm = Modal.confirm;
@@ -46,7 +46,7 @@ class SelectTable extends React.Component {
     //获取数据
     getReportList = (params ={}) => {
         this.setState({ loading:true });
-        Http.getRpqueueAuditingList(params).then((res) => {
+        RptQueueHttp.getRpqueueAuditingList(params).then((res) => {
             console.info('getReportList=>', res);
             const pagination = { ...this.state.pagination }
             pagination.total = res.data.total;
@@ -74,7 +74,7 @@ class SelectTable extends React.Component {
             content: tips,
             okType: 'danger',
             onOk() {
-                Http.pushReport(record.schid).then((res) => {
+                RptQueueHttp.pushReport(record.schid).then((res) => {
                     if (res.data.code === "0") {
                         message.success("推送正在受理中，请稍后查看邮件!");
                         _this.getReportList();
@@ -107,7 +107,7 @@ class SelectTable extends React.Component {
             content: tips,
             okType: 'danger',
             onOk() {
-                Http.autoPushOrCancel(record).then((res) => {
+                RptQueueHttp.autoPushOrCancel(record).then((res) => {
                     message.success(cb_tips);
                     _this.getReportList();
                 }).catch((err) => {

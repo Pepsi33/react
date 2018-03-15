@@ -1,9 +1,6 @@
-import { createStore,combineReducers } from 'redux';
-import UserInfo from './reducers/UserInfo';
+import { createStore } from 'redux';
+import reducers from './reducers/index'
 
-const reducer = combineReducers({
-    UserInfo
-});
+let store = createStore(reducers);
 
-let store = createStore(reducer)
 export default store;

@@ -3,7 +3,7 @@
  */
 
 import { hashHistory } from 'react-router';
-import UserManager from '../../axios/UserManager';
+import { Http } from '../../axios/UserManagerHttp';
 import { message } from 'antd';
 
 
@@ -31,7 +31,7 @@ export const checkAuth = () => {
 }
 
 //登录
-export const login = (state) => UserManager.login(state).then((res) => {
+export const login = (state) => Http.login(state).then((res) => {
   console.info('login=>', res);
 
   if (res.status === 200) {

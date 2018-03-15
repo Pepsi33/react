@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Row, Col, Input, Button, Icon } from 'antd';
+import { Form, Row, Col, Input, Button } from 'antd';
 const FormItem = Form.Item;
 
 class AdvancedSearchForm extends React.Component {
