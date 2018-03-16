@@ -1,9 +1,10 @@
 
 import * as type from './constants/ActionTypes';
 
-export const login = (data) => ({
+export const login = (data,id) => ({
   type: type.USER_LOGIN,
-  data
+  data,
+  id
 });
 
 export const layout = () => ({
@@ -14,13 +15,16 @@ export const layout = () => ({
 
 
 //报表参数数据
-export const setRptParamsData = (data) => ({
+export const setRptParamsData = (data,id) => ({
   type: type.RPT_PAM_DATA_SET,
-  data
+  data,
+  id
 });
 
 export const getRptParamsData = () => ({
   type: type.RPT_PAM_DATA_GET
 }); 
+
+
 
 

@@ -90,7 +90,7 @@ class reportManagerTable extends React.Component {
             console.info('getReportManagerList=>', res);
             const pagination = { ...this.state.pagination }
             pagination.total = res.data.total;
-            //pagination.current = res.data.pageNo;
+            pagination.current = res.data.pageNo;
 
             res.data.items.forEach((v, i) => {
                 v.key = i;
@@ -181,6 +181,7 @@ class reportManagerTable extends React.Component {
                         onChange={this.handleTableChange}
                     />
                 </div>
+                <Modal/>
             </div>        
         );
     }

@@ -119,6 +119,10 @@ class BaseModule {
     delete(url, config = {}) {
         return this.$http.delete(url, config)
     }
+    
+    all(promise){
+        return axios.all(promise)
+    }
 }
 
 export default BaseModule

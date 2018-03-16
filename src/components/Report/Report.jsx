@@ -4,28 +4,12 @@ import { WarpReportForm } from '../Form/ReportForm';
 
 
 class Report extends React.Component {
-    constructor(props){
-        super(props)
-        this.sate = {
-            rptid:""
-        }
-    }
-    componentWillMount(){
-        let rptid = this.props.id
-        this.setState({ rptid })
-        //console.log(this.props)
-    }
-    componentWillReceiveProps(){
-        //console.log("componentWillReceiveProps:",this.props)
-    }
     render() {
-        const rptid = this.props.id;
-        console.log(rptid);
         return (
             <div className="main-warp">
                 <Card title="报表中心报表配置表" bordered={false} className="card-warp">
                     <WarpReportForm 
-                        rptid="2003"
+                        rptid={this.props.rptid}
                     />
                 </Card>
                 <style>{`

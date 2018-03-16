@@ -1,15 +1,25 @@
 import React from 'react';
-import { Table,Popconfirm } from 'antd';
+import { Table, Popconfirm } from 'antd';
 import { EditInputCell, EditSelectCell } from './TableCell';
 import data from './RptSelectData';
 import { setRptParamsData as setPmData } from '../../redux/actions';
 import store from '../../redux/store';
+import UpdateReportHttp from '../../axios/UpdateReportHttp';
 
 class EditableTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            RptPmData:[]
+            RptPmData:[],
+            pagination: {
+                defaultCurrent: 1,
+                showSizeChanger: true,
+                //showTotal: (total, range) => `总共 ${Math.ceil(Number(total) / Number(range[1]))} 页,当前第 ${range[0]} 页`,
+                onShowSizeChange: (current, pageSize) => {
+                    console.log("onShowSizeChange", this.state)
+                    this.props.onShowSizeChange({ pageNo: current, limit: pageSize });
+                }
+            }
         }
         this.columns = [{
                 title: '参数ID',
@@ -105,20 +115,32 @@ class EditableTable extends React.Component {
                                     </span>
                                     : <a onClick={this.edit.bind(this,record.key)}>编辑</a>
                             }
+                            {
+                                this.props.rptid?
+                                        <span>
+                                        <Popconfirm title="确定删除?" onConfirm={() => this.delete(record)}>
+                                                <a>删除</a>
+                                            </Popconfirm>
+                                        </span>:null
+                            }
                         </div>
                     );
                 },
         }];
     }
     componentWillMount(){
-        console.log(store);    
+        //console.log(store);    
     }
     componentWillReceiveProps(props){
-        store.dispatch(setPmData(props.dataSource));
+        this.dispatchRptPmData(props.dataSource);
         this.setState({
             RptPmData: props.dataSource
         });
         this.cacheData = this.state.RptPmData.map(item => ({ ...item }));
+    }
+    //传递表格数据到store
+    dispatchRptPmData = (data) => {
+        store.dispatch(setPmData(data, this.props.id));
     }
     renderInput(text, record, column) {
         return (
@@ -174,7 +196,7 @@ class EditableTable extends React.Component {
             delete target.editable;
             this.setState({ RptPmData: newData });
             this.cacheData = newData.map(item => ({ ...item }));
-            store.dispatch(setPmData(this.state.RptPmData));
+            this.dispatchRptPmData(this.state.RptPmData);
         }
     }
     //取消
@@ -186,6 +208,27 @@ class EditableTable extends React.Component {
             delete target.editable;
             this.setState({ RptPmData: newData });
         }
+    }
+    //删除
+    delete = (record) => {
+        let params = {
+                rptid:record.rptid,
+                flinage: record.flinage
+            };
+
+        UpdateReportHttp.deleteParam(params).then((res) => {
+            if (res.status === 200) {
+                const newData = [...this.state.RptPmData];
+                const fiterData = newData.filter(item => record.key !== item.key);
+                if (fiterData) {
+                    this.setState({ RptPmData: fiterData });
+                    this.cacheData = fiterData.map(item => ({ ...item }));
+                    this.dispatchRptPmData(this.state.RptPmData);
+                }
+            } 
+        }).catch(err => console.error(err));
+
+        
     }
     render() {
         return <Table 

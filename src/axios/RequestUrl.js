@@ -28,6 +28,12 @@ export const AddReportRqUrl = {
 }
 
 export const UpdateReportRqUrl = {
-    DownloadFileArgRpx: '/report/downloadFilerpx.do',                                       //下载*_arg.rpx文件
-    QueryOne:'/report/queryOne.do'                                                          //报表详情
+    DownloadFileRpx: '/reportcenter/report/downloadFile.do',                                //下载*_arg.rpx文件
+    DownloadFileArgRpx: '/reportcenter/report/downloadFilerpx.do',                          //下载*_arg.rpx文件
+    QueryOne:'/reportcenter/report/queryOne.do',                                            //根据rptid获取报表基础详情
+    UpdAttach: '/reportcenter/report/updAttach.do',
+    DeleteParam:'/reportcenter/report/delReportDetails.do',                                 //删除报表参数配置参数
+    UploadRpxFile: '/reportcenter/report/uploadReportFile.do',                              //上传文件
+    UpdateReport:'/reportcenter/report/updateReport.do',                                    //更新
+    GetRptPmsDtl:'/reportcenter//report/getReportDetail.do'                                 //获取报表参数配置
 }

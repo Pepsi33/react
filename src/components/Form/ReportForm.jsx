@@ -1,8 +1,9 @@
 import React from 'react';
-import { Form, Input, Button, Select, Upload, Icon, message } from 'antd';
+import { Form, Input, Button, Select, Upload, message } from 'antd';
 import { AddReportRqUrl as requestUrl } from "../../axios/RequestUrl";
 import EditableTable from '../../components/Table/Editable';
 import AddReportHttp from '../../axios/AddReportHttp';
+import UpdateReportHttp from '../../axios/UpdateReportHttp';
 import store from '../../redux/store';
 
 const FormItem = Form.Item;
@@ -17,13 +18,40 @@ class reportForm extends React.Component {
         }
     }
     componentWillMount(){
-        console.log("props",this.props);
+        console.log("rptid:",this.props.rptid)
+        if(this.props.rptid){
+            const params = {
+                "sp[rptid]": this.props.rptid
+            }
+            this.getPmsDataByRptid(params);
+        }
+
+        this.setState({
+            id: new Date().getTime()
+        });
+        
         this.getOptions();
     }
-    componentWillReceiveProps(props){
-        console.log(props)
-        console.log("props", this.props);
+    //获取基础数据
+    getPmsDataByRptid = (params,cb) => {
+        UpdateReportHttp.getBaseDate(params,(a,b)=>{
+            //console.log(a,b);
+            if(a.status === 200){
+                this.setFormInit(a.data.content);
+            }
+
+            if(b.status === 200){
+                this.setDataSource(b.data.items);
+            }
+        })
     }
+    //表单初始化数据
+    setFormInit = (reportInfo) => {
+        const { rpttitle, rptfilename, rptfilename_arg, saveasfilename, scfiletype, datasource } = reportInfo;
+        const data = { rpttitle, rptfilename, rptfilename_arg, saveasfilename, scfiletype, datasource };
+        this.props.form.setFieldsValue(data);
+    }
+    //获取数据源下拉选项数据
     getOptions = () => {
         AddReportHttp.getDataSource().then((res) => {
             //console.log(res);
@@ -38,19 +66,20 @@ class reportForm extends React.Component {
     //提交
     handleSubmit = (e) => {
         e.preventDefault();
+        let rptid = this.props.rptid;
+
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log(values)
-
                 let target = this.getAddRptParams(values);
-                AddReportHttp.addReport(target);
+                rptid ? UpdateReportHttp.submitReport(target):AddReportHttp.submitReport(target);
             }
-            console.log("this",this);
         });    
     }
     getAddRptParams = (reportInfo) =>{
         let dataSource = store.getState().ReportM.RptPmData;
         console.log("store=>dataSource:", dataSource);
+        if (this.props.rptid) reportInfo.rptid = this.props.rptid;
         let target = {
             dataSource,
             reportInfo
@@ -59,19 +88,6 @@ class reportForm extends React.Component {
         console.log(target);
 
         return target;
-    }
-    //新增报表
-    addReport = (params)=>{
-        AddReportHttp.addReport(params).then((res) => {
-            var code = res.data.code;
-            if (code === '0') {
-                message.succss("新增报表成功！");
-                //window.close();
-            }
-        }).catch(err => console.error(err));
-    }
-    handleSelectChange = (value) => {
-        console.log(value);
     }
     //Uploader props
     upload_props = {
@@ -113,6 +129,24 @@ class reportForm extends React.Component {
             });
         }
     }
+    //.rpx文件下载
+    downloadFileRpx = () => {
+        console.log(this.state);
+        const params = {
+            fileName: this.state.reportInfo.rptfilename,
+            datasource: this.state.reportInfo.datasource
+        }
+        UpdateReportHttp.downloadFileRpx(params);
+    }
+    //*_arg.rpx文件下载
+    downloadFileArgRpx = () => {
+        console.log(this.state);
+        const params = {
+            fileName: this.state.reportInfo.rptfilename_arg,
+            datasource: this.state.reportInfo.datasource
+        }
+        UpdateReportHttp.downloadFileArgRpx(params);
+    }
     render() {
         const { getFieldDecorator } = this.props.form;
         const options = this.state.options.map(d => <Option key={d.id}>{d.pathName}</Option>);
@@ -144,20 +178,46 @@ class reportForm extends React.Component {
                 <FormItem
                     wrapperCol={{ span: 12, offset: 5 }}
                 >
+                <FormItem
+                    wrapperCol={{ span: 12}}
+                >
                     <Upload {...this.upload_props} onChange={this.upload_onChange}>
-                        <Button type="primary"><Icon type="upload" />文件上传</Button>
+                            <Button type="primary" icon="upload" size="large">文件上传</Button>
                     </Upload>
+                    {this.props.rptid ?
+                        <Button 
+                            type="primary" 
+                            icon="download" 
+                            title="下载.rpx文件" 
+                            onClick={this.downloadFileRpx}
+                            style={{ marginLeft: "10px" }}>下载文件</Button>
+                        :null
+                    }
+                </FormItem>
                 </FormItem>
                 <FormItem
                     label="报表参数文件名（*_arg.rpx文件名）"
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 12 }}
+                    style={{ marginBottom: "5px" }}
                 >
                     {getFieldDecorator('rptfilename_arg', {
                         rules: [{ required: true, message: '报表参数文件名不能为空!' }],
                     })(
                         <Input placeholder="报表参数文件名（*_arg.rpx文件名）" />
                         )}
+                </FormItem>
+                <FormItem
+                    wrapperCol={{ span: 12, offset: 5 }} 
+                >
+                    {this.props.rptid ? 
+                        <Button 
+                            type="primary" 
+                            icon="download" 
+                            title="下载*_arg.rpx文件" 
+                            onClick={this.downloadFileArgRpx}>下载文件</Button> 
+                            : null
+                    }
                 </FormItem>
                 <FormItem
                     label="生成文件名"
@@ -180,7 +240,6 @@ class reportForm extends React.Component {
                     })(
                         <Select
                             placeholder="请选择报表生成文件类型"
-                            onChange={this.handleSelectChange}
                         >
                             <Option value=".xls">.xls</Option>
                             <Option value=".doc">.doc</Option>
@@ -190,16 +249,15 @@ class reportForm extends React.Component {
                         )}
                 </FormItem>
                 <FormItem
-                    label="报表生成文件类型"
+                    label="数据源"
                     labelCol={{ span: 5 }}
                     wrapperCol={{ span: 12 }}
                 >
                     {getFieldDecorator('datasource', {
-                        rules: [{ required: true, message: '请选择报表生成的文件类型' }],
+                        rules: [{ required: true, message: '请选择数据源' }],
                     })(
                         <Select
                             placeholder="请选择报表生成文件类型"
-                            onChange={this.handleSelectChange}
                         >
                             {options}
                         </Select>
@@ -207,6 +265,8 @@ class reportForm extends React.Component {
                 </FormItem>
                 <EditableTable 
                     title="参数配置"
+                    rptid={this.props.rptid}
+                    id={this.state.id}
                     dataSource={this.state.dataSource}
                 />
                 <FormItem

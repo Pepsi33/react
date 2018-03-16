@@ -10,36 +10,41 @@ class AddReportHttp extends BaseModule {
     }
     //上传文件
     uploadRpxFile(params){
-        var formData = new FormData();
+        let formData = new FormData();
         formData.append('file', params.file.originFileObj, params.file.name);
         formData.append('datasource', params.reportInfo.datasource); 
         formData.append('reptKey', '');
-        var config = {
+        const config = {
             headers: { 'Content-Type': 'multipart/form-data' }
         };
         return this.post(AddReportRqUrl.UploadRpxFile, formData, config);
     }
     //提交新增报表
-    addReport(params){
-        this.uploadRpxFile(params).then((res)=>{
-            var code = res.data.code;
+    submitReport(params){
+        this.uploadRpxFile(params).then((res) => {
+            let code = res.data.code;
             if (code === "0") {
-                let postData = {
-                    reportVo: JSON.stringify(params.reportInfo), 
-                    reportDetails: JSON.stringify(params.dataSource.map(d => {
-                        delete d.key;
-                        delete d.editable;
-                        return { ...d }; 
-                    }))
-                }
-                this.post(AddReportRqUrl.SaveReport, postData).then((res) => {
-                    var code = res.data.code;
-                    console.log(res)
-                    if (code === '0') {
-                        message.success("新增报表成功！");
-                        window.close();
-                    }
-                }).catch(err => console.error(err));
+                this.SaveReport(params);
+            }
+        }).catch(err => console.error(err));    
+    }
+    //保存
+    SaveReport(params){
+        const postData = {
+                reportVo: JSON.stringify(params.reportInfo), 
+                reportDetails: JSON.stringify(params.dataSource.map(d => {
+                    delete d.key;
+                    delete d.editable;
+                    return { ...d }; 
+                }))
+            };
+
+        this.post(AddReportRqUrl.SaveReport, postData).then((res) => {
+            let code = res.data.code;
+            console.log(res)
+            if (code === '0') {
+                message.success("新增报表成功!");
+                window.close();
             }
         }).catch(err => console.error(err));
     }
