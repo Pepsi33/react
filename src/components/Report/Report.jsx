@@ -1,16 +1,19 @@
 import React from 'react';
 import { Card } from 'antd';
 import { WarpReportForm } from '../Form/ReportForm';
+import { WarpReportSubcibeForm } from '../Form/ReportSubcibeForm';
 
 
 class Report extends React.Component {
     render() {
+        const type = this.props.type;
+        const rptid = this.props.rptid;
         return (
             <div className="main-warp">
-                <Card title="报表中心报表配置表" bordered={false} className="card-warp">
-                    <WarpReportForm 
-                        rptid={this.props.rptid}
-                    />
+                <Card title={this.props.title} bordered={false} className="card-warp">
+                    {
+                        type === "queue" ? <WarpReportSubcibeForm rptid={rptid}/>:<WarpReportForm rptid={rptid}/>
+                    }
                 </Card>
                 <style>{`
                     .main-warp{

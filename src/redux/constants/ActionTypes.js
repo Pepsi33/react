@@ -15,4 +15,5 @@ export const RPT_PAM_DATA_SET = 'RPT_PAM_DATA_SET'
 export const RPT_PAM_DATA_GET = 'RPT_PAM_DATA_GET'
 
 
-
+//多报表订阅存储选择数据
+export const SELECT_DATA_SET = 'SELECT_DATA_SET' 

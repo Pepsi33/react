@@ -4,39 +4,34 @@ import { Table, Button, Modal,message } from 'antd';
 import { WrappedAdvancedSearchForm } from '../../components/Form/SearchForm';
 import RptManagerHttp from '../../axios/RptManagerHttp';
 import { openWindow } from '../../utils/index';
+import store from '../../redux/store';
+import { setSelectedData } from '../../redux/actions';
+import { unsubscribe } from '../../redux/store';
 const confirm = Modal.confirm;
 
 
-class reportManagerTable extends React.Component {
+class ReportManagerTable extends React.Component {
     state = {
         loading: true,
         selectedRowKeys: [],
+        selectedRows:[],
         pagination: {
             defaultCurrent: 1,
             showSizeChanger: true,
             showTotal: (total, range) => `总共 ${Math.ceil(Number(total) / Number(range[1]))} 页,当前第 ${range[0]} 页`,
             onShowSizeChange: (current, pageSize) => {
                 console.log("onShowSizeChange", this.state)
-                this.getReportList({ pageNo: current, limit: pageSize });
+                this.getData({ pageNo: current, limit: pageSize });
             }
         },
-        dataSource: [],
-        formItemData:[{
-            id: "report_Id",
-            label: "报表ID",
-            placeholder: "请输入要查询的报表ID"
-        }, {
-            id: "report_Name",
-            label: "报表名称",
-            placeholder: "请输入要查询的报表名称"
-        }]
+        dataSource: []
     };
     componentWillMount() {
         this.getData();
     }
-    onSelectChange = (selectedRowKeys) => {
-        console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
+    componentDidMount(){
+        console.log("报表管理创建完成")
+        unsubscribe()
     }
     columns = [{
         title: '报表ID',
@@ -48,7 +43,8 @@ class reportManagerTable extends React.Component {
         key: "rpttitle",
         render: (text, record) => {
             let url = `#/report/detail/${record.rptid}`;
-            return <a className="title" href={url} target="_blank">{text}</a>
+            let t = this.props.type ?<span className="title">{text}</span>:<a className="title" href={url} target="_blank">{text}</a>;
+            return t;
             //return <Link to={{ pathname: url, state: {} }}><Button>直接跳转</Button></Link>
         },
     }, {
@@ -62,9 +58,10 @@ class reportManagerTable extends React.Component {
     }, {
         title: '操作',
         dataIndex: 'action',
+        className:this.props.type?"hide":"show",
         key: "action",
         render: (text, record) => (
-            <div className="bt-warp">
+            this.props.type ?null:<div className="bt-warp">
                 <Button type="primary" title="报表查询" onClick={openWindow.bind(this, `http://192.168.71.121:8080/reportcenter/report/queryReport.do?rptid=${record.rptid}`)}>查询</Button>
                 <Button type="danger" onClick={this.deleteReport.bind(this,record.rptid)}>删除</Button>
             </div>
@@ -93,11 +90,12 @@ class reportManagerTable extends React.Component {
             pagination.current = res.data.pageNo;
 
             res.data.items.forEach((v, i) => {
-                v.key = i;
+                v.key = v.rptid;
             });
 
             this.setState({
                 dataSource: res.data.items,
+                //selectedRowKeys:[],
                 loading: false,
                 pagination
             });
@@ -126,53 +124,32 @@ class reportManagerTable extends React.Component {
         });
 
     }
+    onSelectChange = (selectedRowKeys, selectedRows) => {
+        selectedRows.forEach((v,i)=>{v.status="add"})
+        this.setState({ selectedRowKeys, selectedRows },()=>{
+            console.log(this.state.selectedRows);
+            //store.dispatch(setSelectedData(this.state.selectedRows));
+        });
+        
+    }
     render() {
         const { selectedRowKeys } = this.state;
         const rowSelection = {
             selectedRowKeys,
-            onChange: this.onSelectChange,
-            selections: [{
-                key: 'odd',
-                text: '选择奇数列',
-                onSelect: (changableRowKeys) => {
-                    let newSelectedRowKeys = [];
-                    newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                        if (index % 2 !== 0) {
-                            return false;
-                        }
-                        return true;
-                    });
-                    this.setState({ selectedRowKeys: newSelectedRowKeys });
-                },
-            }, {
-                key: 'even',
-                text: '选择偶数列',
-                onSelect: (changableRowKeys) => {
-                    let newSelectedRowKeys = [];
-                    newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                        if (index % 2 !== 0) {
-                            return true;
-                        }
-                        return false;
-                    });
-                    this.setState({ selectedRowKeys: newSelectedRowKeys });
-                },
-            }],
-            onSelection: this.onSelection,
+            onChange: this.onSelectChange
         };
         return (
             <div>
                 <WrappedAdvancedSearchForm 
-                    formItemData = {this.state.formItemData}
                     queryReport = {this.getData}
                 />
-                <div style={{marginBottom:"10px"}}>
+                <div style={{marginBottom:"10px"}} className={this.props.type?"hide":"show"}>
                     <Button type="primary" size="large" onClick={openWindow.bind(this,"#/addReport")}>新增</Button>
-                    <Button type="primary" size="large" onClick={openWindow.bind(this,"http://192.168.71.121:8080/reportcenter/report/reportRpqueueList.do")}>多报表订阅</Button>
+                    <Button type="primary" size="large" onClick={() => openWindow("#/setReportSubscibe")}>多报表订阅</Button>
                 </div>
-                <div className="search-result-list">
+                <div className={`search-result-list search-${this.props.type}-list`}>
                     <Table
-                        rowSelection={rowSelection}
+                        rowSelection={this.props.type?rowSelection:null}
                         columns={this.columns}
                         dataSource={this.state.dataSource}
                         loading={this.state.loading}
@@ -182,9 +159,18 @@ class reportManagerTable extends React.Component {
                     />
                 </div>
                 <Modal/>
+                <style>{`
+                    .hide{display:none;}
+                    .show{display:block;}
+                    .search-select-list{
+                        max-height:500px;
+                        overflow-y:auto;
+                    }
+                `}    
+                </style>
             </div>        
         );
     }
 }
 
-export default reportManagerTable;
+export default ReportManagerTable;

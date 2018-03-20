@@ -60,3 +60,4 @@ export const getRootPath = () => {
 export const openWindow = (url,target) => {
     window.open(url, target ? target:"_blank");
 }
+

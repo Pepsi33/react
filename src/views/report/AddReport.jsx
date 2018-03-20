@@ -6,7 +6,7 @@ import Report from '../../components/Report/Report'
 class addReport extends React.Component {
     render() {
         return (
-            <Report/>
+            <Report title="报表中心报表配置表"/>
         );
     }
 }

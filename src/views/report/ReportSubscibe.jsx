@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Table, Button,Modal, message } from 'antd';
+import { Table, Button, Modal, message } from 'antd';
 //import { Link } from 'react-router';
 
 import RptQueueHttp from '../../axios/RptQueueHttp';
@@ -8,22 +7,22 @@ import '../../style/less/reportRpqueue.less';
 import { openWindow } from '../../utils/index';
 const confirm = Modal.confirm;
 
-class SelectTable extends React.Component {
+class ReportSubscibe extends React.Component {
     state = {
-        loading:true,
+        loading: true,
         selectedRowKeys: [],
-        pagination:{
-            defaultCurrent:1,
-            showSizeChanger:true,
+        pagination: {
+            defaultCurrent: 1,
+            showSizeChanger: true,
             showTotal: (total, range) => `总共 ${Math.ceil(Number(total) / Number(range[1]))} 页,当前第 ${range[0]} 页`,
             onShowSizeChange: (current, pageSize) => {
                 console.log("onShowSizeChange", this.state)
                 this.getReportList({ pageNo: current, limit: pageSize });
             }
         },
-        dataSource:[]
+        dataSource: []
     };
-    componentWillMount(){
+    componentWillMount() {
         this.getReportList();
     }
     onSelectChange = (selectedRowKeys) => {
@@ -31,11 +30,11 @@ class SelectTable extends React.Component {
         this.setState({ selectedRowKeys });
     }
     //分页事件
-    handleTableChange = (pagination,filters,sorter) => {
+    handleTableChange = (pagination, filters, sorter) => {
         const pager = { ...this.state.pagination };
         pager.current = pagination.current;
-        this.setState({ 
-            pagination:pager 
+        this.setState({
+            pagination: pager
         });
         console.log(this.state)
         this.getReportList({
@@ -44,20 +43,20 @@ class SelectTable extends React.Component {
         })
     }
     //获取数据
-    getReportList = (params ={}) => {
-        this.setState({ loading:true });
+    getReportList = (params = {}) => {
+        this.setState({ loading: true });
         RptQueueHttp.getRpqueueAuditingList(params).then((res) => {
             console.info('getReportList=>', res);
             const pagination = { ...this.state.pagination }
             pagination.total = res.data.total;
             //pagination.current = res.data.pageNo;
 
-            res.data.items.forEach((v,i) => {
+            res.data.items.forEach((v, i) => {
                 v.key = i;
             });
-            
+
             this.setState({
-                dataSource:res.data.items,
+                dataSource: res.data.items,
                 loading: false,
                 pagination
             });
@@ -68,7 +67,7 @@ class SelectTable extends React.Component {
     //报表推送
     reportPush = (record) => {
         const _this = this;
-        let tips = (record.bccaddressExternal || record.ccaddressExternal || record.msaddressExternal) ?"报表队列包含外部收件人,请确定要手动推送吗?":"手动推送报表"; 
+        let tips = (record.bccaddressExternal || record.ccaddressExternal || record.msaddressExternal) ? "报表队列包含外部收件人,请确定要手动推送吗?" : "手动推送报表";
         confirm({
             title: '系统提示',
             content: tips,
@@ -81,27 +80,27 @@ class SelectTable extends React.Component {
                     } else {
                         message.error("推送失败");
                     }
-                }).catch((err) =>{
+                }).catch((err) => {
                     console.error(err);
                     message.error("推送失败");
-                }) 
+                })
             },
             onCancel() {
                 console.log('Cancel');
             },
-        });    
+        });
     }
     //启动或取消自动推送
     autoPushOrCancel = (record) => {
-        let _this = this,tips = "", cb_tips = "";
-        if (record.stat !== "1"){
+        let _this = this, tips = "", cb_tips = "";
+        if (record.stat !== "1") {
             tips = (record.bccaddressExternal || record.ccaddressExternal || record.msaddressExternal) ? "报表队列包含外部收件人,启动自动推送外部收件人将收不到邮件！请确定要启动吗?" : "启动报表自动推送";
             cb_tips = "启动报表自动推送成功!";
-        }else{
+        } else {
             tips = "取消报表自动推送";
             cb_tips = "取消报表自动推送成功!";
         }
-        
+
         confirm({
             title: '系统提示',
             content: tips,
@@ -191,18 +190,18 @@ class SelectTable extends React.Component {
             onSelection: this.onSelection,
         };
         return (
-            <Table 
-                rowSelection={rowSelection} 
-                columns={this.columns} 
-                dataSource={this.state.dataSource} 
-                loading={this.state.loading} 
+            <Table
+                rowSelection={rowSelection}
+                columns={this.columns}
+                dataSource={this.state.dataSource}
+                loading={this.state.loading}
                 bordered={true}
                 pagination={this.state.pagination}
                 onChange={this.handleTableChange}
-                title={() =><h2>报表中心报表订阅审核</h2>}
+                title={() => <h2>报表中心报表订阅审核</h2>}
             />
         );
     }
 }
 
-export default SelectTable;
+export default ReportSubscibe;

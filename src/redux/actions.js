@@ -26,5 +26,11 @@ export const getRptParamsData = () => ({
 }); 
 
 
+//多报表订阅
+export const setSelectedData = (data) => ({
+  type: type.SELECT_DATA_SET,
+  data
+});
+
 
 

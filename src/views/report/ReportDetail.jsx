@@ -6,6 +6,7 @@ class ReportDetail extends React.Component {
         const rptid = this.props.params.id;
         return (
             <Report
+                title="报表中心报表配置表"
                 rptid={rptid}
             />
         );

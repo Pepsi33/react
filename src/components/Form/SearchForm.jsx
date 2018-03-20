@@ -1,6 +1,15 @@
 import React from 'react';
 import { Form, Row, Col, Input, Button } from 'antd';
 const FormItem = Form.Item;
+const formItemData = [{
+        id: "report_Id",
+        label: "报表ID",
+        placeholder: "请输入要查询的报表ID"
+    }, {
+        id: "report_Name",
+        label: "报表名称",
+        placeholder: "请输入要查询的报表名称"
+    }];
 
 class AdvancedSearchForm extends React.Component {
     state = {
@@ -28,7 +37,6 @@ class AdvancedSearchForm extends React.Component {
     getFields() {
         const { getFieldDecorator } = this.props.form;
         const children = [];
-        const formItemData = this.props.formItemData;
 
         for (let i = 0; i < formItemData.length; i++) {
             children.push(

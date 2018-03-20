@@ -8,9 +8,11 @@ import Register from '../components/common/Register';
 import NotFound from '../components/common/NotFound';
 
 import ReportManager from '../views/report/ReportManager';
-import ReportRpqueue from '../views/report/ReportRpqueue';
+import ReportSubscibe from '../views/report/ReportSubscibe';
 import AddReport from '../views/report/AddReport';
-import ReportDetail from '../views/report/ReportDetail';
+import ReportDetail from '../views/report/ReportDetail'; 
+import SetReportSubscibe from '../views/report/SetReportSubscibe';
+
 
 import { checkAuth } from '../redux/reducers/UserInfo';
 
@@ -20,10 +22,11 @@ const routes =
         <Route onEnter={checkAuth} path={'reportCenter'} component={App}>
             <Route path={'index'} component={Home} />
             <Route path={'report/reportManager'} component={ReportManager} />
-            <Route path={'report/reportRpqueue'} component={ReportRpqueue} />
+            <Route path={'report/reportSubscibe'} component={ReportSubscibe} />
         </Route>
         <Route onEnter={checkAuth} path={'addReport'} component={AddReport} />
         <Route onEnter={checkAuth} path={'report/detail/:id'} component={ReportDetail} />
+        <Route onEnter={checkAuth} path={'setReportSubscibe'} component={SetReportSubscibe} />
         <Route path={'register'} components={Register} />
         <Route path={'login'} components={Login} />
         <Route path={'404'} component={NotFound} />
