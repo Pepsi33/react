@@ -1,8 +1,10 @@
 import React from 'react';
-import { Form, Input, Button, message, Table} from 'antd';
+import { Input, Button, message, Table} from 'antd';
+import { connect } from 'react-redux';
 
+import { deleteSelectedData as delSelected } from '../../redux/actions';
 
-class RptSubcTable extends React.Component {
+class RptSubscibeTable extends React.Component {
     constructor(props){
         super(props)
         this.columns = [{
@@ -31,17 +33,27 @@ class RptSubcTable extends React.Component {
             render: (text, record) => (
                 <div className="bt-warp">
                     <Button type="primary" title="参数配置">配置</Button>
-                    <Button type="danger">删除</Button>
+                    <Button type="danger" onClick={this.props.delete.bind(this,record.key)}>删除</Button>
                 </div>
             )
         }]
     }
+    componentWillMount(){
+        console.log(this.props)
+    }
+    componentWillReceiveProps(props){
+        console.log(props)
+    }
+    delete = (record) => {
+        this.props.dispatch(delSelected(record.key))
+    }
     render(){
+        const { selectedRows } = this.props.ReportS
         return  <div>
                     <Table
-                        style={{ display: this.props.dataSource.length ? "block" : "none" }}
+                        style={{ display: selectedRows.length? "block" : "none" }}
                         columns={this.columns}
-                        dataSource={this.props.dataSource}
+                        dataSource={selectedRows}
                         bordered={true}
                     />
                     <style>{`
@@ -53,5 +65,25 @@ class RptSubcTable extends React.Component {
                 </div>
     }
 }
+
+const mapStateToProps = (state) => {
+    return {
+        ReportS: state.ReportS
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        delete: (key) => {
+            console.log(key)
+            dispatch(delSelected(key))
+        }
+    }
+}
+
+const RptSubcTable = connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(RptSubscibeTable)
 
 export default RptSubcTable

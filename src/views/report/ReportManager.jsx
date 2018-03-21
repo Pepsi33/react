@@ -4,9 +4,8 @@ import { Table, Button, Modal,message } from 'antd';
 import { WrappedAdvancedSearchForm } from '../../components/Form/SearchForm';
 import RptManagerHttp from '../../axios/RptManagerHttp';
 import { openWindow } from '../../utils/index';
-import store from '../../redux/store';
 import { setSelectedData } from '../../redux/actions';
-import { unsubscribe } from '../../redux/store';
+import { connect } from 'react-redux';
 const confirm = Modal.confirm;
 
 
@@ -15,6 +14,7 @@ class ReportManagerTable extends React.Component {
         loading: true,
         selectedRowKeys: [],
         selectedRows:[],
+        cacheSelectedRows:{},
         pagination: {
             defaultCurrent: 1,
             showSizeChanger: true,
@@ -28,10 +28,10 @@ class ReportManagerTable extends React.Component {
     };
     componentWillMount() {
         this.getData();
+        console.log("componentWillMount", this.props)
     }
-    componentDidMount(){
-        console.log("报表管理创建完成")
-        unsubscribe()
+    componentWillReceiveProps(props){
+        console.log("componentWillReceiveProps",props)
     }
     columns = [{
         title: '报表ID',
@@ -84,7 +84,7 @@ class ReportManagerTable extends React.Component {
     getData = (params = {}) => {
         this.setState({ loading: true });
         RptManagerHttp.getReportManagerList(params).then((res) => {
-            console.info('getReportManagerList=>', res);
+            //console.info('getReportManagerList=>', res);
             const pagination = { ...this.state.pagination }
             pagination.total = res.data.total;
             pagination.current = res.data.pageNo;
@@ -125,15 +125,39 @@ class ReportManagerTable extends React.Component {
 
     }
     onSelectChange = (selectedRowKeys, selectedRows) => {
-        selectedRows.forEach((v,i)=>{v.status="add"})
-        this.setState({ selectedRowKeys, selectedRows },()=>{
-            console.log(this.state.selectedRows);
-            //store.dispatch(setSelectedData(this.state.selectedRows));
+        let data = this.fiterSelectedRows(selectedRowKeys,selectedRows);
+        let curryState = {
+                selectedRowKeys,
+                selectedRows: data.selectedRows,
+                cacheSelectedRows: data.cacheSelectedRows
+            };
+        this.setState(curryState,()=>{
+            //console.log(this.state);
+            this.props.dispatch(setSelectedData(curryState));
         });
         
     }
+    fiterSelectedRows = (selectedRowKeys,selectedData) =>{
+        let { cacheSelectedRows } = this.state;
+        let selectedRows = [];
+        for (let item of selectedData){
+            if (!cacheSelectedRows[item.key]){
+                cacheSelectedRows[item.key] = item;
+            }
+        }
+        
+        for (let key of selectedRowKeys) {
+            selectedRows.push(cacheSelectedRows[key]);
+        }
+
+        return {
+            cacheSelectedRows,
+            selectedRows
+        }
+
+    }
     render() {
-        const { selectedRowKeys } = this.state;
+        const { selectedRowKeys,cacheSelectedRows,selectedRows } = this.props.ReportS;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange
@@ -173,4 +197,15 @@ class ReportManagerTable extends React.Component {
     }
 }
 
-export default ReportManagerTable;
+
+const mapStateToProps = (state) =>{
+    return {
+        ReportS: state.ReportS
+    }
+}
+
+const ReportManager = connect(
+    mapStateToProps,
+)(ReportManagerTable)
+
+export default ReportManager;

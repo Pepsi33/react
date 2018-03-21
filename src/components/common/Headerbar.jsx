@@ -26,7 +26,7 @@ class Headerbar extends Component {
         });
     }
     componentWillMount() {
-        console.log("headerbar=>",store.getState())
+        //console.log("headerbar=>",store.getState())
         var user = store.getState().UserInfo || JSON.parse(sessionStorage.getItem("userInfo"));
         this.setState({
             user: user.username

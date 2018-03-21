@@ -5,7 +5,7 @@ import EditableTable from '../../components/Table/Editable';
 import RptSubcTable from '../../components/Table/RptSubcTable';
 import MyEditor from '../../components/Editor/Editor';
 import MyModal from '../../components/Modal/MyModal';
-
+import { Provider } from 'react-redux'
 import store from '../../redux/store';
 
 const FormItem = Form.Item;
@@ -30,13 +30,49 @@ class ReportSubcibeForm extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            selectDate:[],
+            selectedRowKeys: [],
+            selectedRows: [],
+            cacheSelectedRows: {},
             visible: false    
         }
     }
     componentWillMount() {
-        console.log("rptid:", this.props.rptid)
-    
+        console.log(this.props);
+        this.setState({
+            selectedRowKeys:["2003"],
+            selectedRows: [{
+                cdate: 1516261652000,
+                cman: null,
+                datasource: "ECUSER",
+                dirid: null,
+                key: "20003",
+                mdate: 1516261652000,
+                mman: null,
+                rptfilename: "refundmentInfo.rpx",
+                rptfilename_arg: "refundmentInfo_arg.rpx",
+                rptid: "20003",
+                rpttitle: "线下汇款业务退款明细表",
+                saveasfilename: null,
+                scfiletype: null,
+                stat: "STAR"}],
+            cacheSelectedRows: {"20003":{
+                cdate: 1516261652000,
+                cman: null,
+                datasource: "ECUSER",
+                dirid: null,
+                key: "20003",
+                mdate: 1516261652000,
+                mman: null,
+                rptfilename: "refundmentInfo.rpx",
+                rptfilename_arg: "refundmentInfo_arg.rpx",
+                rptid: "20003",
+                rpttitle: "线下汇款业务退款明细表",
+                saveasfilename: null,
+                scfiletype: null,
+                stat: "STAR"
+            }}
+        })
+        
     }
     showModal = () => {
         
@@ -51,16 +87,20 @@ class ReportSubcibeForm extends React.Component {
         });
     }
     handleOk = () => {
-        let selectDate = store.getState().ReportS.selectDate;
-        console.log(selectDate);
+        let selectedRows = store.getState().ReportS.selectedRows;
+        console.log(selectedRows);
         this.setState({
-            selectDate,
+            selectedRows,
             visible: false,
         })
+    }
+    delete = (record)=>{
+        console.log(record)
     }
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
+            <Provider store={store}>
             <Form onSubmit={this.handleSubmit}>
                 <MyModal
                     visible={this.state.visible}
@@ -75,7 +115,7 @@ class ReportSubcibeForm extends React.Component {
                     <Button type="primary" onClick={this.showModal}>选择报表</Button>
                 </FormItem>
                 <RptSubcTable
-                    dataSource={this.state.selectDate}
+                    dataSource={this.state.selectedRows}
                 />
                 <FormItem
                     label="邮件标题"
@@ -181,9 +221,11 @@ class ReportSubcibeForm extends React.Component {
                         }
                 `}</style>
             </Form>
+            </Provider>
         );
     }
 }
 
+  
 
 export const WarpReportSubcibeForm = Form.create()(ReportSubcibeForm);

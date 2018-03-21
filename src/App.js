@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import store from './redux/store';
+//import store from './redux/store';
 import Siderbar from './components/common/Siderbar';
 import Headerbar from './components/common/Headerbar';
 import './style/main.less';
@@ -9,7 +9,7 @@ const { Content, Footer } = Layout;
 class App extends Component {
   componentWillMount() {
       //this.checkAuth();
-      console.log("app",store.getState())
+      //console.log("app",store.getState())
   }
   state = {
     collapsed: false,

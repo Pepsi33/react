@@ -2,12 +2,6 @@ import React from 'react';
 import { Modal } from 'antd';
 
 class MyModal extends React.Component {
-    componentWillReceiveProps(nextProps){
-        console.log(nextProps)
-        this.setState({
-            visible: nextProps.visible
-        });
-    }
     render() {
         return (
             <div>
