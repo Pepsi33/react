@@ -37,3 +37,10 @@ export const UpdateReportRqUrl = {
     UpdateReport:'/reportcenter/report/updateReport.do',                                    //更新
     GetRptPmsDtl:'/reportcenter//report/getReportDetail.do'                                 //获取报表参数配置
 }
+
+
+//报表订阅
+export const RptSubcibeRqUrl = {
+    GetRptPmsDtl:'/reportcenter//rpqueueDetail/getRpqueueDetailListByRptid.do',
+    DeleteParam: '/reportcenter/report/delReportDetails.do'
+}

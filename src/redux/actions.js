@@ -37,5 +37,34 @@ export const deleteSelectedData = (id) => ({
     id
 });
 
+//更新表格单条数据
+export const updateSelectedData = (value, key, property) => ({
+    type: type.SELECT_DATA_UPDATE,
+    value,
+    key,
+    property
+});
+
+//设置单条 参数数据
+export const setSelectedPmData = (key, PmData) => ({
+    type: type.RPT_PM_DATA_SET,
+    key, 
+    PmData
+}); 
+
+//设置单条 参数数据
+export const getSelectedPmData = (key) => ({
+    type: type.RPT_PM_DATA_GET,
+    key
+});
+
+//更新参数数据
+export const updateSelectedPmData = (key, PmData) => ({
+    type: type.RPT_PM_DATA_UPTATE,
+    key,
+    PmData
+});
+
+
 
 

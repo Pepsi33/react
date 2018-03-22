@@ -1,5 +1,6 @@
 import React from 'react';
 import Report from '../../components/Report/Report';
+import WarpReportSubcibeForm from '../../components/Form/ReportSubcibeForm';
 
 class SetReportSubscibe extends React.Component {
     render() {
@@ -7,8 +8,7 @@ class SetReportSubscibe extends React.Component {
         return (
             <Report
                 title="报表订阅推送"
-                schid={schid}
-                type="queue"
+                component={<WarpReportSubcibeForm schid={schid}/>}
             />
         );
     }

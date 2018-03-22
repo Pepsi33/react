@@ -1,30 +1,13 @@
 import React from 'react';
-import { Form, Input, Button, message, Table, Checkbox } from 'antd';
-import ReportManagerTable from '../../views/report/ReportManager';
-import EditableTable from '../../components/Table/Editable';
+import { Form, Input, Button, Checkbox } from 'antd';
+import { formItemLayout, ModalProps } from './formData';
 import RptSubcTable from '../../components/Table/RptSubcTable';
 import MyEditor from '../../components/Editor/Editor';
 import MyModal from '../../components/Modal/MyModal';
-import { Provider } from 'react-redux'
 import store from '../../redux/store';
 
 const FormItem = Form.Item;
-const formItemLayout = {
-    labelCol: {
-        xs: { span: 24 },
-        sm: { span: 4 }
-    },
-    wrapperCol: {
-        xs: { span: 24 },
-        sm: { span: 15 }
-    },
-};
 
-const modalProps = {
-    title: "多报表订阅",
-    width: "80%",
-    Component: <ReportManagerTable type="select"/>
-}
 
 class ReportSubcibeForm extends React.Component {
     constructor(props) {
@@ -100,13 +83,12 @@ class ReportSubcibeForm extends React.Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         return (
-            <Provider store={store}>
             <Form onSubmit={this.handleSubmit}>
                 <MyModal
                     visible={this.state.visible}
                     handleOk={this.handleOk}
                     handleCancel={this.handleCancel}
-                    {...modalProps}
+                    {...ModalProps}
                 />
                 <FormItem
                     style={{display:this.props.schid?"none":"block"}}
@@ -114,9 +96,7 @@ class ReportSubcibeForm extends React.Component {
                 >
                     <Button type="primary" onClick={this.showModal}>选择报表</Button>
                 </FormItem>
-                <RptSubcTable
-                    dataSource={this.state.selectedRows}
-                />
+                <RptSubcTable style={{marginBottom:"10px"}}/>
                 <FormItem
                     label="邮件标题"
                     {...formItemLayout}
@@ -221,11 +201,10 @@ class ReportSubcibeForm extends React.Component {
                         }
                 `}</style>
             </Form>
-            </Provider>
         );
     }
 }
 
-  
+const WarpReportSubcibeForm = Form.create()(ReportSubcibeForm);
 
-export const WarpReportSubcibeForm = Form.create()(ReportSubcibeForm);
+export default WarpReportSubcibeForm;

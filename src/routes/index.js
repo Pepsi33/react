@@ -10,7 +10,7 @@ import NotFound from '../components/common/NotFound';
 import ReportManager from '../views/report/ReportManager';
 import ReportSubscibe from '../views/report/ReportSubscibe';
 import AddReport from '../views/report/AddReport';
-import ReportDetail from '../views/report/ReportDetail'; 
+//import ReportDetail from '../views/report/ReportDetail'; 
 import SetReportSubscibe from '../views/report/SetReportSubscibe';
 
 
@@ -25,7 +25,7 @@ const routes =
             <Route path={'report/reportSubscibe'} component={ReportSubscibe} />
         </Route>
         <Route onEnter={checkAuth} path={'addReport'} component={AddReport} />
-        <Route onEnter={checkAuth} path={'report/detail/:id'} component={ReportDetail} />
+        <Route onEnter={checkAuth} path={'report/detail/:id'} component={AddReport} />
         <Route onEnter={checkAuth} path={'setReportSubscibe'} component={SetReportSubscibe} />
         <Route path={'register'} components={Register} />
         <Route path={'login'} components={Login} />

@@ -1,5 +1,6 @@
 import React from 'react';
 import Report from '../../components/Report/Report';
+import { WarpReportForm } from '../Form/ReportForm';
 
 class ReportDetail extends React.Component {
     render() {
@@ -7,7 +8,7 @@ class ReportDetail extends React.Component {
         return (
             <Report
                 title="报表中心报表配置表"
-                rptid={rptid}
+                component={<WarpReportForm rptid={rptid} />}
             />
         );
     }

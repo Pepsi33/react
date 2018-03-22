@@ -13,7 +13,7 @@ export const ReportM = (state = initStates, action) => {
 		case 'RPT_PAM_DATA_SET':
 		  state.RptPmData[action.id] = action.data;
 			return state;
-	  	case 'RPT_PAM_DATA_GET':
+		case 'RPT_PAM_DATA_GET':
 			return state.RptPmData;
 		default:
 			return state

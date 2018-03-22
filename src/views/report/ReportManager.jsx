@@ -28,10 +28,10 @@ class ReportManagerTable extends React.Component {
     };
     componentWillMount() {
         this.getData();
-        console.log("componentWillMount", this.props)
+        //console.log("rptManagerWillMount", this.props)
     }
     componentWillReceiveProps(props){
-        console.log("componentWillReceiveProps",props)
+        //console.log("rptManager:",props)
     }
     columns = [{
         title: '报表ID',
@@ -125,16 +125,11 @@ class ReportManagerTable extends React.Component {
 
     }
     onSelectChange = (selectedRowKeys, selectedRows) => {
-        let data = this.fiterSelectedRows(selectedRowKeys,selectedRows);
         let curryState = {
                 selectedRowKeys,
-                selectedRows: data.selectedRows,
-                cacheSelectedRows: data.cacheSelectedRows
+                selectedRows
             };
-        this.setState(curryState,()=>{
-            //console.log(this.state);
-            this.props.dispatch(setSelectedData(curryState));
-        });
+        this.props.dispatch(setSelectedData(curryState));
         
     }
     fiterSelectedRows = (selectedRowKeys,selectedData) =>{
@@ -157,7 +152,7 @@ class ReportManagerTable extends React.Component {
 
     }
     render() {
-        const { selectedRowKeys,cacheSelectedRows,selectedRows } = this.props.ReportS;
+        const { selectedRowKeys } = this.props.ReportS;
         const rowSelection = {
             selectedRowKeys,
             onChange: this.onSelectChange

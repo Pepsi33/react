@@ -14,6 +14,12 @@ const data = {
                     { "id": "OpenWin", "text": "弹出页面"},
                     { "id": "ReadOnly", "text": "只读"},
                     { "id": "Hidden", "text": "隐藏"}
+                ],
+                "scfiletype":[
+                    { "id": ".xls", "text": ".xls" },
+                    { "id": ".doc", "text": ".doc" },
+                    { "id": ".pdf", "text": ".pdf" },
+                    { "id": ".html", "text": ".html" }
                 ]
             };
 

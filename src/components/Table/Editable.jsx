@@ -1,16 +1,21 @@
 import React from 'react';
 import { Table, Popconfirm } from 'antd';
+import UpdateReportHttp from '../../axios/UpdateReportHttp';
 import { EditInputCell, EditSelectCell } from './TableCell';
 import data from './RptSelectData';
-import { setRptParamsData as setPmData } from '../../redux/actions';
-import store from '../../redux/store';
-import UpdateReportHttp from '../../axios/UpdateReportHttp';
+import { 
+    setRptParamsData as setPmData,
+    updateSelectedPmData as updataPmData        //订阅时更新数据
+ } from '../../redux/actions';
+import { connect } from 'react-redux';
 
-class EditableTable extends React.Component {
+
+class EditTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             RptPmData:[],
+            type:this.props.type,
             pagination: {
                 defaultCurrent: 1,
                 showSizeChanger: true,
@@ -129,18 +134,29 @@ class EditableTable extends React.Component {
         }];
     }
     componentWillMount(){
-        //console.log(store);    
+        console.log("editableWillMount", this.props);
+        //this.setRptPmData(this.props);    
     }
     componentWillReceiveProps(props){
+        console.log("editableWillReceiveProps",props);
+        this.setRptPmData(props);
+    }
+    //设置数据源
+    setRptPmData = (props)=>{
+        /* const key = props.ReportS.id;
+        const data = props.getPmData(key);
+        const RptPmData = this.state.type ? data : props.dataSource; */
+        const RptPmData = props.dataSource;
         this.dispatchRptPmData(props.dataSource);
-        this.setState({
-            RptPmData: props.dataSource
+        this.setState({ RptPmData },()=>{
+            this.cacheData = this.state.RptPmData.map(item => ({ ...item }));
         });
-        this.cacheData = this.state.RptPmData.map(item => ({ ...item }));
+        
     }
     //传递表格数据到store
     dispatchRptPmData = (data) => {
-        store.dispatch(setPmData(data, this.props.id));
+        let _action = this.state.type ? updataPmData:setPmData;
+        this.props.dispatch(_action(data, this.props.id));
     }
     renderInput(text, record, column) {
         return (
@@ -241,5 +257,15 @@ class EditableTable extends React.Component {
                 />;
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        ReportS: state.ReportS
+    }
+}
+
+
+const EditableTable = connect(
+    mapStateToProps
+)(EditTable);
 
 export default EditableTable;

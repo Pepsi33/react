@@ -9,7 +9,7 @@ import store from '../../redux/store';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-class reportForm extends React.Component {
+class ReportForm extends React.Component {
     constructor(props){
         super(props)
         this.state = {
@@ -280,5 +280,5 @@ class reportForm extends React.Component {
     }
 }
 
-
-export const WarpReportForm = Form.create()(reportForm);
+const WarpReportForm = Form.create()(ReportForm);
+export default WarpReportForm;
